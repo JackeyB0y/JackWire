@@ -176,3 +176,12 @@ select
     cursor: pointer;
     flex: 1;
 }
+
+/* hide volume slider on mobile since it does not work on IOS */
+@media (max-width: 600px)
+{
+    .volume-row
+    {
+        display: none;
+    }
+}
