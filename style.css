@@ -1,0 +1,178 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&family=Courier+Prime&family=Oxanium&family=Rajdhani&family=Orbitron&family=Special+Elite&display=swap');
+
+:root
+{
+    --color-page-background:    #1a1a2e;
+    --color-player-background:  #16213e;
+    --color-accent:             #00d4aa;
+    --color-accent-faint:       #00d4aa11;
+    --color-accent-dim:         #00d4aa22;
+    --color-accent-mid:         #00d4aa33;
+    --color-accent-muted:       #00d4aa55;
+    --color-accent-subtle:      #00d4aa66;
+    --color-accent-ghost:       #00d4aa88;
+    --color-text-bright:        #fff;
+    --color-text-muted:         #aaa;
+    --font-title: 'Orbitron', sans-serif;
+    --font-main: 'Share Tech Mono', monospace; 
+}
+
+body 
+{
+    background: var(--color-page-background);
+    font-family: Tahoma, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+     font-family: var(--font-main);
+}
+
+.player-container
+{
+    background: var(--color-player-background);
+    border: 2px solid var(--color-accent);
+    width: 320px;
+    padding: 12px;
+    color: var(--color-accent);
+}
+
+/* logo */
+.logo-title 
+{ 
+    font-size: 24px; 
+    letter-spacing: 4px; 
+    margin-bottom: 2px; 
+    font-family: var(--font-title);
+}
+.logo-tagline 
+{ 
+    font-size: 9px;
+    letter-spacing: 2px; 
+    color: var(--color-accent-ghost); 
+    margin-bottom: 12px; 
+}
+
+/* currently playing song name */
+.now-playing-title 
+{
+    font-size: 13px;
+    color: var(--color-text-bright);
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* progress bar */
+.progress-bar 
+{ 
+    width: 100%; 
+    height: 4px; 
+    background: var(--color-accent-dim); 
+    cursor: pointer; 
+    margin-bottom: 4px; 
+}
+.progress-fill 
+{ 
+    height: 100%;
+    background: var(--color-accent); 
+    width: 0%; 
+}
+
+/* timestamps */
+.timestamps 
+{
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--color-accent-subtle);
+    margin-bottom: 10px;
+}
+
+/* buttons */
+.controls 
+{ 
+    display: flex; 
+    gap: 8px; 
+    margin-bottom: 10px; 
+}
+button 
+{
+    background: none;
+    border: 1px solid var(--color-accent-muted);
+    color: var(--color-accent);
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: Tahoma, sans-serif;
+    font-size: 12px;
+    font-family: var(--font-main);
+}
+button:hover 
+{ 
+    background: var(--color-accent-dim); 
+}
+button.active 
+{ 
+    background: var(--color-accent-mid); 
+    border-color: var(--color-accent); 
+}
+
+/* volume */
+.volume-row 
+{ 
+    display: flex; 
+    align-items: 
+    center; gap: 8px; 
+    font-size: 11px; 
+    margin-bottom: 10px; 
+}
+input[type=range] 
+{ 
+    flex: 1; 
+    accent-color: var(--color-accent); 
+}
+
+/* song list */
+.song-list 
+{ 
+    max-height: 180px; 
+    overflow-y: auto; 
+    border-top: 1px solid var(--color-accent-mid); 
+}
+.song-item 
+{ 
+    padding: 5px 4px; 
+    font-size: 12px; 
+    cursor: pointer; 
+    border-bottom: 1px solid var(--color-accent-faint); 
+    color: var(--color-text-muted);
+ }
+.song-item:hover 
+{ 
+    color: var(--color-text-bright); 
+}
+.song-item.active 
+{ 
+    color: var(--color-accent); 
+}
+
+/* theme picker */
+.theme-row
+{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    margin-bottom: 10px;
+}
+select
+{
+    background: none;
+    border: 1px solid var(--color-accent-muted);
+    color: var(--color-accent);
+    padding: 3px 6px;
+    font-family: Tahoma, sans-serif;
+    font-size: 11px;
+    cursor: pointer;
+    flex: 1;
+}

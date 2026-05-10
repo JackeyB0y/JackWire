@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes"> 
+    <title>JackWire</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="player-container">
+
+        <!-- logo -->
+        <h1 class="logo-title">JackWire</h1>
+        <div class="logo-tagline">Version 1.0.0</div>
+
+        <!-- theme picker -->
+        <div class="theme-row">
+            THEME
+            <select id="themePicker"></select>
+        </div>
+
+        <!-- currently playing -->
+        <div class="now-playing-title" id="nowPlayingTitle">no song selected</div>
+
+        <!-- progress bar -->
+        <div class="progress-bar" id="progressBar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- timestamps -->
+        <div class="timestamps">
+            <span id="currentTime">0:00</span>
+            <span id="totalTime">0:00</span>
+        </div>
+
+        <!-- buttons -->
+        <div class="controls">
+            <button id="prevBtn">⏮</button>
+            <button id="playBtn">▶</button>
+            <button id="nextBtn">⏭</button>
+            <button id="shuffleBtn">⇄</button>
+            <button id="repeatBtn">↻</button>
+        </div>
+
+        <!-- volume -->
+        <div class="volume-row">
+            VOL
+            <input type="range" id="volumeSlider" min="0" max="100" value="75">
+            <span id="volumeLabel">75%</span>
+        </div>
+
+        <!-- song list -->
+        <div class="song-list" id="songList"></div>
+    </div>
+
+    <audio id="audioPlayer"></audio>
+    <script src="script.js"></script>
+</body>
+</html>
