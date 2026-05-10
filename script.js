@@ -364,7 +364,10 @@ document.getElementById('repeatBtn').onclick = function() {
 };
 
 // volume 
-document.getElementById('volumeSlider').oninput = function() {
+// volume
+document.getElementById('volumeSlider').oninput = 
+document.getElementById('volumeSlider').onchange = function() 
+{
     audioPlayer.volume = this.value / 100;
     document.getElementById('volumeLabel').textContent = this.value + '%';
 };
