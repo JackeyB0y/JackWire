@@ -305,8 +305,9 @@ function loadSong(index)
 {
     currentSongIndex = index;
     audioPlayer.src = 'songs/' + songs[index];
-    document.getElementById('nowPlayingTitle').textContent = getDisplayName(songs[index]);
-    updateMediaSession(displayName);
+    const displayName = getDisplayName(songs[index]);
+    document.getElementById('nowPlayingTitle').textContent = displayName;
+    document.title = 'JackWire - ' + displayName;
     renderSongList();
 }
 
@@ -323,7 +324,7 @@ function renderSongList()
 {
     document.getElementById('songList').innerHTML = songs.map((filename, index) => `
         <div class="song-item${index === currentSongIndex ? ' active' : ''}" onclick="playSong(${index})">
-        ${index === currentSongIndex ? '▶ ' : ''}${getDisplayName(filename)}
+            ${index === currentSongIndex ? '▶ ' : ''}${getDisplayName(filename)}
         </div>
     `).join('');
 }
@@ -394,24 +395,6 @@ audioPlayer.onended = () => {
     }
     playSong(getNextIndex());
 };
-
-// for the lock screen
-function updateMediaSession(songName)
-{
-    if ('mediaSession' in navigator)
-    {
-        navigator.mediaSession.metadata = new MediaMetadata
-        ({
-            title:  songName,
-            artist: 'JackWire',
-            album:  'S-Tier Songs',
-            artwork:
-            [
-                { src: 'logo.png', sizes: '512x512', type: 'image/png' }
-            ]
-        });
-    }
-}
 
 // get songs
 renderSongList();
