@@ -213,6 +213,13 @@ const themes =
     },
 };
 
+let activePlaylists = new Set(Object.keys(playlists));
+let songs = []; 
+let currentSongIndex = 0;
+let isRepeatOn = false;
+
+const audioPlayer = document.getElementById('audioPlayer');
+
 // applies a theme by setting all its css variables on the root element
 function applyTheme(themeName)
 {
@@ -225,54 +232,128 @@ function applyTheme(themeName)
     });
 }
 
+function toggleThemeDropdown()
+{
+    document.getElementById('themeOptions').classList.toggle('open');
+}
+
 // builds the theme picker dropdown and wires up the change event
 function renderThemePicker()
 {
-    const picker = document.getElementById('themePicker');
+    const options = document.getElementById('themeOptions');
 
-    picker.innerHTML = Object.keys(themes).map(name =>
-        `<option value="${name}">${name}</option>`
-    ).join('');
-
-    picker.onchange = () => applyTheme(picker.value);
+    options.innerHTML = Object.keys(themes).map(name => `
+        <div class="playlist-checkbox-option" onclick="selectTheme('${name}')">
+            ${name}
+        </div>
+    `).join('');
 }
 
-const songs =
-[
-    "2Pac - Changes ft. Talent.mp3",
-    "ABBA - Dancing Queen (Official Music Video).mp3",
-    "Al Stewart - Year of the Cat (Official Audio).mp3",
-    "Billy Joel - Modern Woman (Audio).mp3",
-    "Billy Joel - Pressure (Official Video).mp3",
-    "Billy Joel - Stiletto (Audio).mp3",
-    "Blondie - Heart Of Glass.mp3",
-    "Bon Jovi - Wanted Dead Or Alive (Official Music Video).mp3",
-    "Bonnie Tyler - Holding Out For A Hero (Official HD Video).mp3",
-    "Daft Punk - Get Lucky (Official Audio) ft. Pharrell Williams, Nile Rodgers.mp3",
-    "David Bowie - Starman (Official Video) [4K].mp3",
-    "Dexys Midnight Runners, Kevin Rowland - Come On Eileen (1982 Version).mp3",
-    "Don McLean - American Pie (Lyric Video).mp3",
-    "Eagles - New Kid In Town (Official Audio).mp3",
-    "Fleetwood Mac - The Chain (Official Music Video) [HD].mp3",
-    "Gordon Lightfoot - Sundown (Official Audio).mp3",
-    "Gordon Lightfoot_ Carefree Highway (1974).mp3",
-    "Lenny Kravitz - Fly Away (Official Music Video).mp3",
-    "MACKLEMORE & RYAN LEWIS - DOWNTOWN (OFFICIAL MUSIC VIDEO).mp3",
-    "Merlin's Time - Al Stewart (studio).mp3",
-    "Nickelback - How You Remind Me [OFFICIAL VIDEO].mp3",
-    "Olivia Rodrigo - vampire (Official Video).mp3",
-    "Pearl Jam - Jeremy (Official 4K Video).mp3",
-    "Red Hot Chili Peppers - Californication (Official Music Video) [HD UPGRADE].mp3",
-    "Tears For Fears - Everybody Wants To Rule The World (Official Music Video).mp3",
-    "The Fuse.mp3",
-    "The Pretender.mp3",
-];
+function selectTheme(name)
+{
+    applyTheme(name);
+    document.getElementById('themeLabel').textContent = name;
+    document.getElementById('themeOptions').classList.remove('open');
+}
 
-let currentSongIndex = 0;
-let isShuffleOn = false;
-let isRepeatOn = false;
+// builds songs array from all selected playlists user chose
+function buildSongList()
+{
+   songs = [];
 
-const audioPlayer = document.getElementById('audioPlayer');
+    activePlaylists.forEach(playlistName =>
+    {
+        playlists[playlistName].forEach(filename =>
+        {
+            songs.push(
+            {
+                file:     playlistName + '/' + filename,
+                name:     filename,
+                playlist: playlistName,
+            });
+        });
+    });
+}
+
+// opens and closes the playlist dropdown
+function togglePlaylistDropdown()
+{
+    document.getElementById('playlistOptions').classList.toggle('open');
+}
+
+// updates the dropdown label based on how many playlists are selected
+function updateDropdownLabel()
+{
+    const total    = Object.keys(playlists).length;
+    const selected = activePlaylists.size;
+    const label    = selected === total ? 'all playlists' : selected === 0 ? 'no playlists' : selected + ' playlists';
+
+    document.getElementById('dropdownLabel').textContent = label;
+}
+
+// playlists front end
+function renderPlaylistPicker()
+{
+    const options = document.getElementById('playlistOptions');
+
+    options.innerHTML = Object.keys(playlists).map(name => `
+        <label class="playlist-checkbox-option">
+            <input type="checkbox" value="${name}" checked
+                onchange="togglePlaylist('${name}', this.checked)">
+            ${name}
+        </label>
+    `).join('');
+
+    updateDropdownLabel();
+}
+
+// toggles a playlist on or off
+function togglePlaylist(name, isChecked)
+{
+    if (isChecked)
+    {
+        activePlaylists.add(name);
+    }
+    else
+    {
+        activePlaylists.delete(name);
+    }
+
+    updateDropdownLabel();
+    buildSongList();
+    currentSongIndex = 0;
+    renderSongList();
+
+    if (songs.length > 0)
+    {
+        loadSong(0);
+    }
+    else
+    {
+        audioPlayer.pause();
+        audioPlayer.src = '';
+        document.getElementById('nowPlayingTitle').textContent = 'no song selected';
+        document.title = 'JackWire';
+    }
+
+    document.getElementById('playBtn').textContent = '▶';
+}
+
+// close dropdown when clicking outside
+document.addEventListener('click', function(e)
+{
+    const playlistDropdown = document.getElementById('playlistDropdown');
+    const themeDropdown = document.getElementById('themeDropdown');
+
+    if (!playlistDropdown.contains(e.target))
+    {
+        document.getElementById('playlistOptions').classList.remove('open');
+    }
+    if (!themeDropdown.contains(e.target))
+    {
+        document.getElementById('themeOptions').classList.remove('open');
+    }
+});
 
 // convert seconds to m:ss 
 function formatTime(seconds) {
@@ -290,21 +371,24 @@ function formatTime(seconds) {
 // returns next song index or random if shuffle is on
 function getNextIndex() 
 {
-    return isShuffleOn
-        ? Math.floor(Math.random() * songs.length)
-        : (currentSongIndex + 1) % songs.length;
+    return (currentSongIndex + 1) % songs.length;
 }
 
 // remove .mp3 from name
-function getDisplayName(filename) {
-  return filename.replace('.mp3', '');
+function getDisplayName(song) 
+{
+    return song.name
+        .replace('.mp3', '')
+        .replace(/\(.*?\)/g, '')
+        .replace(/\[.*?\]/g, '')
+        .trim();
 }
 
 // loads song by index 
 function loadSong(index) 
 {
     currentSongIndex = index;
-    audioPlayer.src = 'songs/' + songs[index];
+    audioPlayer.src = songs[index].file;
     const displayName = getDisplayName(songs[index]);
     document.getElementById('nowPlayingTitle').textContent = displayName;
     document.title = 'JackWire - ' + displayName;
@@ -322,9 +406,9 @@ function playSong(index)
 // rebuilds song list and highlights active songs
 function renderSongList() 
 {
-    document.getElementById('songList').innerHTML = songs.map((filename, index) => `
+    document.getElementById('songList').innerHTML = songs.map((song, index) => `
         <div class="song-item${index === currentSongIndex ? ' active' : ''}" onclick="playSong(${index})">
-            ${index === currentSongIndex ? '▶ ' : ''}${getDisplayName(filename)}
+            ${index === currentSongIndex ? '▶ ' : ''}${getDisplayName(song)}
         </div>
     `).join('');
 }
@@ -352,10 +436,22 @@ document.getElementById('prevBtn').onclick = () => {
 };
 
 // shuffle
-document.getElementById('shuffleBtn').onclick = function() {
-    isShuffleOn = !isShuffleOn;
-    this.classList.toggle('active', isShuffleOn);
+document.getElementById('shuffleBtn').onclick = function() 
+{
+    const currentFile = songs[currentSongIndex].file;
+    shuffleSongs();
+    currentSongIndex = songs.findIndex(s => s.file === currentFile);
+    renderSongList();
 };
+
+function shuffleSongs()
+{
+    for (let i = songs.length - 1; i > 0; i--)
+    {
+        const j = Math.floor(Math.random() * (i + 1));
+        [songs[i], songs[j]] = [songs[j], songs[i]];
+    }
+}
 
 // repeat
 document.getElementById('repeatBtn').onclick = function() {
@@ -400,7 +496,9 @@ audioPlayer.onended = () => {
 };
 
 // get songs
+buildSongList();
 renderSongList();
+renderPlaylistPicker();
 renderThemePicker();
-applyTheme("lime");
+selectTheme("lime");
 loadSong(0); 

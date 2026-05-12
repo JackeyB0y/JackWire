@@ -1,0 +1,45 @@
+const playlists =
+{
+    "s-tier":
+    [
+        "2Pac - Changes ft. Talent.mp3",
+        "ABBA - Dancing Queen (Official Music Video).mp3",
+        "Al Stewart - Year of the Cat (Official Audio).mp3",
+        "Billy Joel - Modern Woman (Audio).mp3",
+        "Billy Joel - Pressure (Official Video).mp3",
+        "Billy Joel - Stiletto (Audio).mp3",
+        "Blondie - Heart Of Glass.mp3",
+        "Bon Jovi - Wanted Dead Or Alive (Official Music Video).mp3",
+        "Bonnie Tyler - Holding Out For A Hero (Official HD Video).mp3",
+        "Daft Punk - Get Lucky (Official Audio) ft. Pharrell Williams, Nile Rodgers.mp3",
+        "David Bowie - Starman (Official Video) [4K].mp3",
+        "Dexys Midnight Runners, Kevin Rowland - Come On Eileen (1982 Version).mp3",
+        "Don McLean - American Pie (Lyric Video).mp3",
+        "Eagles - New Kid In Town (Official Audio).mp3",
+        "Fleetwood Mac - The Chain (Official Music Video) [HD].mp3",
+        "Gordon Lightfoot - Sundown (Official Audio).mp3",
+        "Gordon Lightfoot_ Carefree Highway (1974).mp3",
+        "Lenny Kravitz - Fly Away (Official Music Video).mp3",
+        "MACKLEMORE & RYAN LEWIS - DOWNTOWN (OFFICIAL MUSIC VIDEO).mp3",
+        "Merlin's Time - Al Stewart (studio).mp3",
+        "Nickelback - How You Remind Me [OFFICIAL VIDEO].mp3",
+        "Olivia Rodrigo - vampire (Official Video).mp3",
+        "Pearl Jam - Jeremy (Official 4K Video).mp3",
+        "Red Hot Chili Peppers - Californication (Official Music Video) [HD UPGRADE].mp3",
+        "Tears For Fears - Everybody Wants To Rule The World (Official Music Video).mp3",
+        "The Fuse.mp3",
+        "The Pretender.mp3",
+    ],
+    "a-tier":
+    [
+        "ABBA - Gimme! Gimme! Gimme! (A Man After Midnight).mp3",
+        "Fleetwood Mac - Dreams (Official Audio).mp3",
+        "Gordon Lightfoot - Wreck Of The Edmund Fitzgerald (Official Audio).mp3",
+        "Jamiroquai - Virtual Insanity (Official Music Video).mp3",
+        "Nirvana - Lithium (Official Music Video).mp3",
+        "Pearl Jam - Even Flow (Official Video).mp3",
+        "Radiohead - Karma Police.mp3",
+        "Stone Temple Pilots - Creep (Official Music Video).mp3",
+    ],
+    
+};

@@ -13,12 +13,18 @@
 
         <!-- logo -->
         <h1 class="logo-title">JackWire</h1>
-        <div class="logo-tagline">Version 1.0.0</div>
+        <div class="logo-tagline">Version 1.1.0 - The Playlist Update</div>
 
         <!-- theme picker -->
         <div class="theme-row">
             THEME
-            <select id="themePicker"></select>
+            <div class="theme-dropdown" id="themeDropdown">
+                <div class="playlist-dropdown-selected" onclick="toggleThemeDropdown()">
+                    <span id="themeLabel">lime</span>
+                    <span>▾</span>
+                </div>
+                <div class="playlist-dropdown-options" id="themeOptions"></div>
+            </div>
         </div>
 
         <!-- currently playing -->
@@ -51,11 +57,25 @@
             <span id="volumeLabel">75%</span>
         </div>
 
+        <!-- playlist -->
+        <div class="theme-row">
+            PLAYLISTS
+            <div class="playlist-dropdown" id="playlistDropdown">
+                <div class="playlist-dropdown-selected" onclick="togglePlaylistDropdown()">
+                    <span id="dropdownLabel">all playlists</span>
+                    <span>▾</span>
+                </div>
+
+                <div class="playlist-dropdown-options" id="playlistOptions"></div>
+            </div>
+        </div>
+
         <!-- song list -->
         <div class="song-list" id="songList"></div>
     </div>
 
     <audio id="audioPlayer"></audio>
+    <script src="playlists.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
