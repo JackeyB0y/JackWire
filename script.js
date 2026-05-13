@@ -392,6 +392,7 @@ function loadSong(index)
     const displayName = getDisplayName(songs[index]);
     document.getElementById('nowPlayingTitle').textContent = displayName;
     document.title = 'JackWire - ' + displayName;
+    updateMediaSession(songs[index]);
     renderSongList();
 }
 
@@ -494,6 +495,46 @@ audioPlayer.onended = () => {
     }
     playSong(getNextIndex());
 };
+
+function parseSongName(song)
+{
+    const displayName = getDisplayName(song);
+    const separator   = displayName.includes(' - ') ? ' - ' : displayName.includes(' ~ ') ? ' ~ ' : null;
+
+    if (separator)
+    {
+        const parts = displayName.split(separator);
+
+        return {
+            artist: parts[0].trim(),
+            title:  parts.slice(1).join(separator).trim() 
+        };
+    }
+
+    return {
+        artist: song.playlist,
+        title:  displayName,
+    };
+}
+
+function updateMediaSession(song)
+{
+    if ('mediaSession' in navigator)
+    {
+        const parsed = parseSongName(song);
+
+        navigator.mediaSession.metadata = new MediaMetadata
+        ({
+            title:  parsed.title,
+            artist: parsed.artist,
+            album:  'JackWire',
+            artwork:
+            [
+                { src: 'https://jackeyb0y.github.io/JackWire/logo.png', sizes: '512x512', type: 'image/png' }
+            ]
+        });
+    }
+}
 
 // get songs
 buildSongList();
