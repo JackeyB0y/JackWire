@@ -35,7 +35,7 @@ const playlists =
         "ABBA - Gimme! Gimme! Gimme! (A Man After Midnight).mp3",
         "Fleetwood Mac - Dreams (Official Audio).mp3",
         "Gordon Lightfoot - Wreck Of The Edmund Fitzgerald (Official Audio).mp3",
-        "Jamiroquai - Virtual Insanity (Official Music Video).mp3",
+        "Jamiroquai - Virtual Insanity (Official Video).mp3",
         "Nirvana - Lithium (Official Music Video).mp3",
         "Pearl Jam - Even Flow (Official Video).mp3",
         "Radiohead - Karma Police.mp3",
