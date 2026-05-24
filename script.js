@@ -538,6 +538,7 @@ function updateMediaSession(song)
 
 // get songs
 buildSongList();
+shuffleSongs();
 renderSongList();
 renderPlaylistPicker();
 renderThemePicker();
