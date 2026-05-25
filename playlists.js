@@ -29,6 +29,7 @@ const playlists =
         "Tears For Fears - Everybody Wants To Rule The World (Official Music Video).mp3",
         "The Fuse.mp3",
         "The Pretender.mp3",
+        "Dire Straits - Sultans Of Swing (Official Music Video).mp3",
     ],
     "a-tier":
     [
