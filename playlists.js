@@ -84,7 +84,6 @@ const playlists =
         "The Cranberries - Zombie (Official Music Video).mp3",
         "Led Zeppelin - Kashmir (Remaster) (Official Audio).mp3",
         "The Police - Don't Stand So Close To Me (Official Music Video).mp3",
-        "Dire Straits - Sultans Of Swing (Official Music Video).mp3",
         "Al Stewart - Valentina Way.mp3",
         "Blind Melon - No Rain.mp3",
         "Breakbot - Baby I'm Yours (feat. Irfane) [Official Video].mp3",
