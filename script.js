@@ -533,6 +533,29 @@ function updateMediaSession(song)
                 { src: 'https://jackeyb0y.github.io/JackWire/logo.png', sizes: '512x512', type: 'image/png' }
             ]
         });
+
+        // steering wheel buttons
+
+        // play
+        navigator.mediaSession.setActionHandler('play', () => {
+            audioPlayer.play();
+            document.getElementById('playBtn').textContent = '⏸';
+        });
+
+        // pause
+        navigator.mediaSession.setActionHandler('pause', () => {
+            audioPlayer.pause();
+            document.getElementById('playBtn').textContent = '▶';
+        });
+
+        // next song
+        navigator.mediaSession.setActionHandler('nexttrack',    () => playSong(getNextIndex()));
+
+        // last song
+        navigator.mediaSession.setActionHandler('previoustrack',() => {
+            const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+            playSong(prevIndex);
+        });
     }
 }
 
