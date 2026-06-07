@@ -27,8 +27,8 @@ const playlists =
         "Pearl Jam - Jeremy (Official 4K Video).mp3",
         "Red Hot Chili Peppers - Californication (Official Music Video) [HD UPGRADE].mp3",
         "Tears For Fears - Everybody Wants To Rule The World (Official Music Video).mp3",
-        "The Fuse.mp3",
-        "The Pretender.mp3",
+        "The Fuse - Jackson Browne.mp3",
+        "The Pretender - Jackson Browne.mp3",
         "Dire Straits - Sultans Of Swing (Official Music Video).mp3",
     ],
     "a-tier":
