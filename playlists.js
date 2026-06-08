@@ -88,7 +88,7 @@ const playlists =
         "Blind Melon - No Rain.mp3",
         "Breakbot - Baby I'm Yours (feat. Irfane) [Official Video].mp3",
         "Sure Sure - Funky Galileo (Very Official Music Video).mp3",
-        "Young the Giant - My Body Live (MTV).mp3",
+        "Young the Giant - My Body (Official Video).mp3",
         "Electric Light Orchestra - Sweet Talkin' Woman (Audio).mp3",
     ],
     
