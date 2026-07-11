@@ -57,7 +57,7 @@ const themes =
         "--color-text-bright":       "#ffffff",
         "--color-text-muted":        "#aa77aa",
     },
-    "dweller of r'lyeh":
+    "dweller of rlyeh":
     {
         "--color-page-background":   "#001215",
         "--color-player-background": "#001e22",
@@ -256,6 +256,9 @@ function selectTheme(name)
     document.getElementById('themeOptions').classList.remove('open');
 }
 
+// store original song order to shuffle from
+let originalSongs = [];
+
 // builds songs array from all selected playlists user chose
 function buildSongList()
 {
@@ -267,12 +270,14 @@ function buildSongList()
         {
             songs.push(
             {
-                file:     playlistName + '/' + filename,
-                name:     filename,
+                file: playlistName + '/' + filename,
+                name: filename,
                 playlist: playlistName,
             });
         });
     });
+
+    originalSongs = [...songs];
 }
 
 // opens and closes the playlist dropdown
@@ -394,6 +399,7 @@ function loadSong(index)
     document.title = 'JackWire - ' + displayName;
     updateMediaSession(songs[index]);
     renderSongList();
+    prefetchSongs(index);
 }
 
 // plays song 
@@ -436,6 +442,29 @@ document.getElementById('prevBtn').onclick = () => {
     playSong(prevIndex);
 };
 
+// seeded random number generator
+function seededRandom(seed)
+{
+    let t = seed + 0x6D2B79F5;
+    return function()
+    {
+        t = Math.imul(t ^ t >>> 15, t | 1);
+        t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+}
+
+// converts a string seed to a number
+function hashSeed(str)
+{
+    let hash = 0;
+    for (let i = 0; i < str.length; i++)
+    {
+        hash = (Math.imul(31, hash) + str.charCodeAt(i)) | 0;
+    }
+    return Math.abs(hash);
+}
+
 // shuffle
 document.getElementById('shuffleBtn').onclick = function() 
 {
@@ -444,15 +473,6 @@ document.getElementById('shuffleBtn').onclick = function()
     currentSongIndex = songs.findIndex(s => s.file === currentFile);
     renderSongList();
 };
-
-function shuffleSongs()
-{
-    for (let i = songs.length - 1; i > 0; i--)
-    {
-        const j = Math.floor(Math.random() * (i + 1));
-        [songs[i], songs[j]] = [songs[j], songs[i]];
-    }
-}
 
 // repeat
 document.getElementById('repeatBtn').onclick = function() {
@@ -559,9 +579,94 @@ function updateMediaSession(song)
     }
 }
 
+function getTodaysSeed()
+{
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
+function shuffleSongsWithSeed(seedStr)
+{
+    const rng = seededRandom(hashSeed(seedStr));
+
+    songs = [...originalSongs];
+
+    for (let i = songs.length - 1; i > 0; i--)
+    {
+        const j = Math.floor(rng() * (i + 1));
+        [songs[i], songs[j]] = [songs[j], songs[i]];
+    }
+}
+
+function shuffleSongs()
+{
+    const seedInput = document.getElementById('seedInput').value.trim().slice(0, 50);
+    const seedStr = seedInput || Math.random().toString(36).slice(2);
+
+    // don't fill in the box if seed was blank
+    if (seedInput)
+    {
+        document.getElementById('seedInput').value = seedStr;
+    }
+
+    shuffleSongsWithSeed(seedStr);
+}
+
+async function prefetchSongs(currentIndex)
+{
+    const indicesToCache = 
+    [
+        currentIndex,
+        (currentIndex + 1) % songs.length,
+    ];
+
+    const urlsToKeep = new Set(indicesToCache.map(i => songs[i].file));
+
+    try
+    {
+        const cache = await caches.open('jackwire-songs');
+
+        // remove songs that are no longer needed
+        const cachedRequests = await cache.keys();
+        for (const request of cachedRequests)
+        {
+            const url = new URL(request.url).pathname.slice(1);
+            if (!urlsToKeep.has(url))
+            {
+                await cache.delete(request);
+            }
+        }
+
+        // cache current and next song
+        for (const index of indicesToCache)
+        {
+            const url    = songs[index].file;
+            const cached = await cache.match(url);
+
+            if (!cached)
+            {
+                await cache.add(url);
+            }
+        }
+    }
+    catch (e)
+    {
+        console.log('cache error: ' + e);
+    }
+}
+
+// register service worker for offline song caching
+if ('serviceWorker' in navigator)
+{
+    navigator.serviceWorker.register('/sw.js');
+}
+
 // get songs
 buildSongList();
-shuffleSongs();
+shuffleSongsWithSeed(getTodaysSeed());
 renderSongList();
 renderPlaylistPicker();
 renderThemePicker();
