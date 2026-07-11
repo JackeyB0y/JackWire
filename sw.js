@@ -3,12 +3,12 @@ const SONG_CACHE_NAME = 'jackwire-songs';
 
 const filesToCache =
 [
-    '/',
-    '/index.html',
-    '/style.css',
-    '/script.js',
-    '/playlists.js',
-    '/logo.png',
+    '/JackWire/',
+    '/JackWire/index.html',
+    '/JackWire/style.css',
+    '/JackWire/script.js',
+    '/JackWire/playlists.js',
+    '/JackWire/logo.png',
 ];
 
 self.addEventListener('install', event =>

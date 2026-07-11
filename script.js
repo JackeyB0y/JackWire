@@ -617,13 +617,15 @@ function shuffleSongs()
 
 async function prefetchSongs(currentIndex)
 {
+    const baseUrl = 'https://jackeyb0y.github.io/JackWire/';
+
     const indicesToCache =
     [
         currentIndex,
         (currentIndex + 1) % songs.length,
     ];
 
-    const urlsToKeep = new Set(indicesToCache.map(i => songs[i].file));
+    const urlsToKeep = new Set(indicesToCache.map(i => baseUrl + songs[i].file));
 
     try
     {
@@ -633,7 +635,7 @@ async function prefetchSongs(currentIndex)
         const cachedRequests = await cache.keys();
         for (const request of cachedRequests)
         {
-            if (!urlsToKeep.has(request.url) && !urlsToKeep.has(new URL(request.url).pathname.slice(1)))
+            if (!urlsToKeep.has(request.url))
             {
                 await cache.delete(request);
             }
@@ -642,7 +644,7 @@ async function prefetchSongs(currentIndex)
         // cache current and next song
         for (const index of indicesToCache)
         {
-            const url    = songs[index].file;
+            const url    = baseUrl + songs[index].file;
             const cached = await cache.match(url);
 
             if (!cached)
