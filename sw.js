@@ -23,8 +23,28 @@ self.addEventListener('fetch', event =>
     event.respondWith(
         caches.match(event.request).then(cachedResponse =>
         {
-            // serve from cache if available, otherwise fetch from network
-            return cachedResponse || fetch(event.request).catch(() =>
+            // serve from cache if available
+            if (cachedResponse)
+            {
+                return cachedResponse;
+            }
+
+            // not in cache - fetch from network
+            return fetch(event.request).then(response =>
+            {
+                // if its an mp3, cache it as it loads
+                if (event.request.url.endsWith('.mp3') && response.ok)
+                {
+                    const responseToCache = response.clone();
+                    caches.open(SONG_CACHE_NAME).then(cache =>
+                    {
+                        cache.put(event.request, responseToCache);
+                    });
+                }
+
+                return response;
+            })
+            .catch(() =>
             {
                 console.log('offline - could not fetch: ' + event.request.url);
             });
