@@ -617,7 +617,7 @@ function shuffleSongs()
 
 async function prefetchSongs(currentIndex)
 {
-    const indicesToCache = 
+    const indicesToCache =
     [
         currentIndex,
         (currentIndex + 1) % songs.length,
@@ -633,8 +633,7 @@ async function prefetchSongs(currentIndex)
         const cachedRequests = await cache.keys();
         for (const request of cachedRequests)
         {
-            const url = new URL(request.url).pathname.slice(1);
-            if (!urlsToKeep.has(url))
+            if (!urlsToKeep.has(request.url) && !urlsToKeep.has(new URL(request.url).pathname.slice(1)))
             {
                 await cache.delete(request);
             }
@@ -648,20 +647,34 @@ async function prefetchSongs(currentIndex)
 
             if (!cached)
             {
-                await cache.add(url);
+                try
+                {
+                    const response = await fetch(url);
+                    if (response.ok)
+                    {
+                        await cache.put(url, response);
+                    }
+                }
+                catch (fetchError)
+                {
+                    // network unavailable, skip caching
+                }
             }
         }
     }
     catch (e)
     {
-        console.log('cache error: ' + e);
+        if (window.location.protocol === 'https:')
+        {
+            console.log('cache error: ' + e);
+        }
     }
 }
 
 // register service worker for offline song caching
 if ('serviceWorker' in navigator)
 {
-    navigator.serviceWorker.register('/sw.js');
+    navigator.serviceWorker.register('/JackWire/sw.js');
 }
 
 // get songs
