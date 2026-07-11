@@ -399,7 +399,6 @@ function loadSong(index)
     document.title = 'JackWire - ' + displayName;
     updateMediaSession(songs[index]);
     renderSongList();
-    prefetchSongs(index);
 }
 
 // plays song 
@@ -613,70 +612,6 @@ function shuffleSongs()
     }
 
     shuffleSongsWithSeed(seedStr);
-}
-
-async function prefetchSongs(currentIndex)
-{
-    const baseUrl = 'https://jackeyb0y.github.io/JackWire/';
-
-    const indicesToCache =
-    [
-        currentIndex,
-        (currentIndex + 1) % songs.length,
-    ];
-
-    const urlsToKeep = new Set(indicesToCache.map(i => baseUrl + songs[i].file));
-
-    try
-    {
-        const cache = await caches.open('jackwire-songs');
-
-        // remove songs that are no longer needed
-        const cachedRequests = await cache.keys();
-        for (const request of cachedRequests)
-        {
-            if (!urlsToKeep.has(request.url))
-            {
-                await cache.delete(request);
-            }
-        }
-
-        // cache current and next song
-        for (const index of indicesToCache)
-        {
-            const url    = baseUrl + songs[index].file;
-            const cached = await cache.match(url);
-
-            if (!cached)
-            {
-                try
-                {
-                    const response = await fetch(url);
-                    if (response.ok)
-                    {
-                        await cache.put(url, response);
-                    }
-                }
-                catch (fetchError)
-                {
-                    // network unavailable, skip caching
-                }
-            }
-        }
-    }
-    catch (e)
-    {
-        if (window.location.protocol === 'https:')
-        {
-            console.log('cache error: ' + e);
-        }
-    }
-}
-
-// register service worker for offline song caching
-if ('serviceWorker' in navigator)
-{
-    navigator.serviceWorker.register('/JackWire/sw.js');
 }
 
 // get songs
