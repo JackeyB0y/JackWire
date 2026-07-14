@@ -256,8 +256,8 @@ function selectTheme(name)
     document.getElementById('themeOptions').classList.remove('open');
 }
 
-// store original song order to shuffle from
 let originalSongs = [];
+let activeArtists = new Set();
 
 // builds songs array from all selected playlists user chose
 function buildSongList()
@@ -278,6 +278,7 @@ function buildSongList()
     });
 
     originalSongs = [...songs];
+    activeArtists = new Set(getAllArtists());
 }
 
 // opens and closes the playlist dropdown
@@ -349,6 +350,7 @@ document.addEventListener('click', function(e)
 {
     const playlistDropdown = document.getElementById('playlistDropdown');
     const themeDropdown = document.getElementById('themeDropdown');
+    const artistDropdown = document.getElementById('artistDropdown');
 
     if (!playlistDropdown.contains(e.target))
     {
@@ -357,6 +359,10 @@ document.addEventListener('click', function(e)
     if (!themeDropdown.contains(e.target))
     {
         document.getElementById('themeOptions').classList.remove('open');
+    }
+    if (!artistDropdown.contains(e.target))
+    {
+        document.getElementById('artistOptions').classList.remove('open');
     }
 });
 
@@ -598,6 +604,9 @@ function shuffleSongsWithSeed(seedStr)
         const j = Math.floor(rng() * (i + 1));
         [songs[i], songs[j]] = [songs[j], songs[i]];
     }
+
+    // apply artist filter after shuffling
+    songs = songs.filter(song => activeArtists.has(getArtistFromFilename(song.name)));
 }
 
 function shuffleSongs()
@@ -614,11 +623,149 @@ function shuffleSongs()
     shuffleSongsWithSeed(seedStr);
 }
 
+// get artist from filename
+function getArtistFromFilename(filename)
+{
+    const name = filename.replace('.mp3', '').replace(/\(.*?\)/g, '').replace(/\[.*?\]/g, '').trim();
+    const separator = name.includes(' - ') ? ' - ' : name.includes(' ~ ') ? ' ~ ' : null;
+
+    if (separator)
+    {
+        return name.split(separator)[0].trim();
+    }
+
+    return 'unknown';
+}
+
+// get all unique artists from song list
+function getAllArtists()
+{
+    const artists = new Set();
+    originalSongs.forEach(song => artists.add(getArtistFromFilename(song.name)));
+    return [...artists].sort();
+}
+
+// filters songs to only include active artists
+function filterSongsByArtist()
+{
+    songs = originalSongs.filter(song => activeArtists.has(getArtistFromFilename(song.name)));
+}
+
+// opens and closes the artist dropdown
+function toggleArtistDropdown()
+{
+    document.getElementById('artistOptions').classList.toggle('open');
+}
+
+// updates the artist dropdown label
+function updateArtistLabel()
+{
+    const total    = getAllArtists().length;
+    const selected = activeArtists.size;
+    const label    = selected === total ? 'all artists' : selected === 0 ? 'no artists' : selected + ' artists';
+
+    document.getElementById('artistLabel').textContent = label;
+}
+
+// renders the artist picker checkboxes
+function renderArtistPicker()
+{
+    const options = document.getElementById('artistOptions');
+    const artists = getAllArtists();
+    const allCheck = activeArtists.size === artists.length;
+
+    options.innerHTML = `
+        <label class="playlist-checkbox-option">
+            <input type="checkbox" ${allCheck ? 'checked' : ''} onchange="setAllArtists(this.checked)">
+            all
+        </label>
+        <div style="border-top: 1px solid var(--color-accent-faint); margin: 2px 0;"></div>
+    ` + artists.map(name => `
+        <label class="playlist-checkbox-option">
+            <input type="checkbox" value="${name}" ${activeArtists.has(name) ? 'checked' : ''}
+                onchange="toggleArtist('${name.replace(/'/g, "\\'")}', this.checked)">
+            ${name}
+        </label>
+    `).join('');
+
+    updateArtistLabel();
+}
+
+// checks or unchecks all artists
+function setAllArtists(isChecked)
+{
+    const artists = getAllArtists();
+
+    if (isChecked)
+    {
+        activeArtists = new Set(artists);
+    }
+    else
+    {
+        activeArtists = new Set();
+    }
+
+    renderArtistPicker();
+    updateArtistLabel();
+    filterSongsByArtist();
+    currentSongIndex = 0;
+    renderSongList();
+
+    if (songs.length > 0)
+    {
+        loadSong(0);
+        document.getElementById('playBtn').textContent = '▶';
+    }
+    else
+    {
+        audioPlayer.pause();
+        audioPlayer.src = '';
+        document.getElementById('nowPlayingTitle').textContent = 'no song selected';
+        document.title = 'JackWire';
+        document.getElementById('playBtn').textContent = '▶';
+    }
+}
+
+
+// toggles an artist on or off
+function toggleArtist(name, isChecked)
+{
+    if (isChecked)
+    {
+        activeArtists.add(name);
+    }
+    else
+    {
+        activeArtists.delete(name);
+    }
+
+    renderArtistPicker(); 
+    updateArtistLabel();
+    filterSongsByArtist();
+    currentSongIndex = 0;
+    renderSongList();
+
+    if (songs.length > 0)
+    {
+        loadSong(0);
+        document.getElementById('playBtn').textContent = '▶';
+    }
+    else
+    {
+        audioPlayer.pause();
+        audioPlayer.src = '';
+        document.getElementById('nowPlayingTitle').textContent = 'no song selected';
+        document.title = 'JackWire';
+        document.getElementById('playBtn').textContent = '▶';
+    }
+}
+
 // get songs
 buildSongList();
 shuffleSongsWithSeed(getTodaysSeed());
 renderSongList();
 renderPlaylistPicker();
+renderArtistPicker();
 renderThemePicker();
 selectTheme("lime");
 loadSong(0); 
