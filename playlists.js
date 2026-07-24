@@ -30,6 +30,9 @@ const playlists =
         "Jackson Browne - The Fuse.mp3",
         "Jackson Browne - The Pretender.mp3",
         "Dire Straits - Sultans Of Swing (Official Music Video).mp3",
+        "Blue Oyster Cult - The Reaper.mp3",
+        "Blue Oyster Cult - Burning For You.mp3",
+        "Tom Cochrane - Life is a Highway.mp3",
     ],
     "a-tier":
     [
@@ -90,11 +93,12 @@ const playlists =
         "Sure Sure - Funky Galileo (Very Official Music Video).mp3",
         "Young the Giant - My Body (Official Video).mp3",
         "Electric Light Orchestra - Sweet Talkin' Woman (Audio).mp3",
+        "Blue Oyster Cult - Sole Survivor.mp3",
     ],
     "b-tier":
     [
         "Nat King Cole - Love Me As Though There Were No Tomorrow.mp3",
-        "The Weeknd - Blinding Lights (Official Video).mp3",
+        "The Weeknd - Blinding Lights.mp3",
         "Gordon Lightfoot - Long River (1966).mp3",
         "Paul McCartney - Nineteen Hundred And Eighty-Five.mp3",
         "The Beatles - Eleanor Rigby (Official Music Video).mp3",
@@ -113,7 +117,7 @@ const playlists =
         "Gordon Lightfoot - Summer Side of Life.mp3",
         "Gotye - Somebody That I Used To Know (feat. Kimbra) [Official Music Video].mp3",
         "The Drifters - This Magic Moment.mp3",
-        "Foo Fighters - Cold Day In The Sun (from Skin And Bones, Live in Hollywood, 2006).mp3",
+        "Foo Fighters - Cold Day In The Sun.mp3",
         "Phil Collins - Another Day In Paradise [Audio HQ] HD.mp3",
         "Gordon Lightfoot - The Canadian Railroad Trilogy.mp3",
         "Gordon Lightfoot - Don Quixote.mp3",
@@ -123,7 +127,6 @@ const playlists =
         "Gordon Lightfoot - Sit Down Young Stranger.mp3",
         "Gordon Lightfoot - Early Morning Rain.mp3",
         "Metallica - Enter Sandman.mp3",
-        "Sufjan Stevens - Casimir Pulaski Day.mp3",
         "Nickelback - Burn It to the Ground [OFFICIAL HD VIDEO].mp3",
     ],
 };
