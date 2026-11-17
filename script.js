@@ -213,7 +213,10 @@ const themes =
     },
 };
 
-let activePlaylists = new Set(Object.keys(playlists));
+// playlists that are off by default and never shuffled
+const protectedPlaylists = new Set(['hamilton']);
+
+let activePlaylists = new Set(Object.keys(playlists).filter(p => !protectedPlaylists.has(p)));
 let songs = []; 
 let currentSongIndex = 0;
 let isRepeatOn = false;
@@ -302,14 +305,19 @@ function renderPlaylistPicker()
 {
     const options = document.getElementById('playlistOptions');
 
-    options.innerHTML = Object.keys(playlists).map(name => `
+    options.innerHTML = `
         <label class="playlist-checkbox-option">
-            <input type="checkbox" value="${name}" checked
+            <input type="checkbox" checked onchange="setAllPlaylists(this.checked)">
+            all
+        </label>
+        <div style="border-top: 1px solid var(--color-accent-faint); margin: 2px 0;"></div>
+    ` + Object.keys(playlists).map(name => `
+        <label class="playlist-checkbox-option">
+            <input type="checkbox" value="${name}" ${activePlaylists.has(name) ? 'checked' : ''}
                 onchange="togglePlaylist('${name}', this.checked)">
             ${name}
         </label>
     `).join('');
-
     updateDropdownLabel();
 }
 
@@ -597,15 +605,22 @@ function shuffleSongsWithSeed(seedStr)
 {
     const rng = seededRandom(hashSeed(seedStr));
 
-    songs = [...originalSongs];
+    // separate protected and normal songs
+    const normalSongs    = originalSongs.filter(s => !protectedPlaylists.has(s.playlist));
+    const protectedSongs = originalSongs.filter(s =>  protectedPlaylists.has(s.playlist));
 
-    for (let i = songs.length - 1; i > 0; i--)
+    // shuffle only normal songs
+    const shuffled = [...normalSongs];
+    for (let i = shuffled.length - 1; i > 0; i--)
     {
         const j = Math.floor(rng() * (i + 1));
-        [songs[i], songs[j]] = [songs[j], songs[i]];
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
 
-    // apply artist filter after shuffling
+    // protected songs always go at the end in original order
+    songs = [...shuffled, ...protectedSongs];
+
+    // apply artist filter
     songs = songs.filter(song => activeArtists.has(getArtistFromFilename(song.name)));
 }
 
