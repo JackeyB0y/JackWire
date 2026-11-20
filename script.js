@@ -304,21 +304,32 @@ function updateDropdownLabel()
 function renderPlaylistPicker()
 {
     const options = document.getElementById('playlistOptions');
+    const names = Object.keys(playlists);
+    const allCheck = activePlaylists.size === names.length;
 
     options.innerHTML = `
         <label class="playlist-checkbox-option">
-            <input type="checkbox" checked onchange="setAllPlaylists(this.checked)">
+            <input type="checkbox" ${allCheck ? 'checked' : ''} onchange="setAllPlaylists(this.checked)">
             all
         </label>
         <div style="border-top: 1px solid var(--color-accent-faint); margin: 2px 0;"></div>
-    ` + Object.keys(playlists).map(name => `
+    ` + names.map(name => `
         <label class="playlist-checkbox-option">
             <input type="checkbox" value="${name}" ${activePlaylists.has(name) ? 'checked' : ''}
                 onchange="togglePlaylist('${name}', this.checked)">
             ${name}
         </label>
     `).join('');
+
     updateDropdownLabel();
+}
+
+// checks or unchecks all playlists
+function setAllPlaylists(isChecked)
+{
+    activePlaylists = isChecked ? new Set(Object.keys(playlists)) : new Set();
+
+    refreshAfterPlaylistChange();
 }
 
 // toggles a playlist on or off
@@ -333,9 +344,17 @@ function togglePlaylist(name, isChecked)
         activePlaylists.delete(name);
     }
 
-    updateDropdownLabel();
+    refreshAfterPlaylistChange();
+}
+
+// rebuilds everything after the playlist selection changes
+function refreshAfterPlaylistChange()
+{
     buildSongList();
+    shuffleSongsWithSeed(getTodaysSeed());
     currentSongIndex = 0;
+    renderPlaylistPicker();    // re-render so the "all" checkbox reflects current state
+    renderArtistPicker();
     renderSongList();
 
     if (songs.length > 0)
